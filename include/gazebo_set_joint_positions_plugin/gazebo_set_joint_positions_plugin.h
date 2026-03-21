@@ -1,34 +1,45 @@
 #ifndef GAZEBO_SET_JOINT_POSITIONS_PLUGIN_H
 #define GAZEBO_SET_JOINT_POSITIONS_PLUGIN_H
 
-#include <gazebo/common/Events.hh>
-#include <gazebo/common/Plugin.hh>
-#include <gazebo/common/common.hh>
-#include <gazebo/physics/physics.hh>
-#include <gazebo/transport/TransportTypes.hh>
-#include <gazebo/transport/transport.hh>
+#include <gz/sim/System.hh>
+#include <gz/sim/Model.hh>
+#include <gz/sim/Util.hh>
+#include <gz/sim/Entity.hh>
+#include <gz/sim/components/Joint.hh>
+#include <gz/sim/components/JointPosition.hh>
+#include <gz/sim/components/Link.hh>
+#include <gz/sim/components/Name.hh>
+#include <gz/sim/components/Pose.hh>
+#include <sdf/Element.hh>
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 #include "std_msgs/msg/float32_multi_array.hpp"
 
-namespace gazebo
+namespace gazebo_set_joint_positions_plugin
 {
 
-class SetJointPositions : public ModelPlugin
+class SetJointPositions : public gz::sim::System,
+                          public gz::sim::ISystemConfigure,
+                          public gz::sim::ISystemPostUpdate
 {
   public:
     SetJointPositions();
     virtual ~SetJointPositions();
 
-  protected:
-    void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
-    virtual void UpdateChild();
+    void Configure(const gz::sim::Entity &_entity,
+                   const std::shared_ptr<const sdf::Element> &_sdf,
+                   gz::sim::EntityComponentManager &_ecm,
+                   gz::sim::EventManager &_eventMgr) override;
+
+    void PostUpdate(const gz::sim::UpdateInfo &_info,
+                    const gz::sim::EntityComponentManager &_ecm) override;
 
   private:
     void jointStateCallback(const sensor_msgs::msg::JointState msg);
 
-    physics::ModelPtr model_;
+    gz::sim::Entity model_entity_;
+    gz::sim::Model model_;
     rclcpp::Node::SharedPtr nh_;
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr sub_;
 
@@ -40,11 +51,9 @@ class SetJointPositions : public ModelPlugin
 
     bool update_needed_;
 
-    event::ConnectionPtr update_connection_;
-
-    std::vector<physics::JointPtr> joints_list_;
-    std::vector<physics::LinkPtr> links_list_;
+    std::vector<gz::sim::Entity> joints_list_;
+    std::vector<gz::sim::Entity> links_list_;
 };
-}  // namespace gazebo
+}  // namespace gazebo_set_joint_positions_plugin
 
 #endif

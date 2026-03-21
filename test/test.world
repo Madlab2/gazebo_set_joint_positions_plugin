@@ -51,10 +51,9 @@
                         </plane>
                     </geometry>
                     <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
+                        <ambient>1 1 1 1</ambient>
+                        <diffuse>1 1 1 1</diffuse>
+                        <specular>1 1 1 1</specular>
                     </material>
                 </visual>
             </link>
@@ -75,6 +74,20 @@
             <background>0.7 0.7 0.7 1</background>
             <shadows>1</shadows>
         </scene>
+
+        <!-- Gazebo Fortress plugins for ROS 2 integration -->
+        <plugin
+            filename="ignition-gazebo-physics-system"
+            name="ignition::gazebo::systems::Physics">
+        </plugin>
+        <plugin
+            filename="ignition-gazebo-user-commands-system"
+            name="ignition::gazebo::systems::UserCommands">
+        </plugin>
+        <plugin
+            filename="ignition-gazebo-scene-broadcaster-system"
+            name="ignition::gazebo::systems::SceneBroadcaster">
+        </plugin>
 
     </world>
 </sdf>

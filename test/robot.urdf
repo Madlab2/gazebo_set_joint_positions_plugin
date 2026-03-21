@@ -1,0 +1,135 @@
+<robot name="robot">
+
+    <link name="base">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.1"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+    </link>
+
+    <joint name="j1" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="base"/>
+        <child link="link1"/>
+        <axis xyz="0.0 0.0 1"/>
+        <limit lower="-3.14" upper="3.14" effort="100" velocity="100"/>
+    </joint>
+
+    <link name="link1">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.1"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+
+        <visual>
+          <origin xyz="0.0 0.0 0.05" rpy="0.0 0.0 0.0"/>
+          <geometry>
+            <cylinder radius="0.05" length="0.1"/>
+          </geometry>
+          <material name="red">
+            <color rgba="1 0 0 1"/>
+          </material>
+        </visual>
+
+        <collision>
+          <origin xyz="0.0 0.0 0.05" rpy="0.0 0.0 0.0"/>
+          <geometry>
+            <cylinder radius="0.05" length="0.1"/>
+          </geometry>
+        </collision>
+    </link>
+
+    <joint name="j2" type="revolute">
+        <origin xyz="0 0 0.15" rpy="1.57 0 0"/>
+        <parent link="link1"/>
+        <child link="link2"/>
+        <axis xyz="0.0 0.0 1"/>
+        <limit lower="-3.14" upper="3.14" effort="100" velocity="100"/>
+    </joint>
+
+    <link name="link2">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.1"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+
+        <visual>
+            <origin xyz="0.0 0.25 0.0" rpy="1.57 0.0 0.0"/>
+            <geometry>
+               <cylinder radius="0.05" length="0.4"/> 
+            </geometry>
+            <material name="green">
+              <color rgba="0 1 0 1"/>
+            </material>
+        </visual>
+        <visual>
+            <origin xyz="0 0 0"/>
+            <geometry>
+               <cylinder radius="0.05" length="0.1"/> 
+            </geometry>
+            <material name="green">
+              <color rgba="0 1 0 1"/>
+            </material>
+        </visual>
+
+        <collision>
+            <origin xyz="0.0 0.25 0.0" rpy="1.57 0.0 0.0"/>
+            <geometry>
+               <cylinder radius="0.05" length="0.4" effort="100" velocity="100"/> 
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="j3" type="revolute">
+        <origin xyz="0 0.5 0" rpy="0 0 0"/>
+        <parent link="link2"/>
+        <child link="link3"/>
+        <axis xyz="0.0 0.0 1"/>
+        <limit lower="-3.14" upper="3.14" effort="100" velocity="100"/>
+    </joint>
+
+    <link name="link3">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.1"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+
+        <visual>
+            <origin xyz="0.0 0.275 0.0" rpy="1.57 0.0 0.0"/>
+            <geometry>
+               <cylinder radius="0.05" length="0.45"/> 
+            </geometry>
+            <material name="blue">
+              <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+        <visual>
+            <origin xyz="0 0 0"/>
+            <geometry>
+               <cylinder radius="0.05" length="0.1"/> 
+            </geometry>
+            <material name="blue">
+              <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.275 0.0" rpy="1.57 0.0 0.0"/>
+            <geometry>
+               <cylinder radius="0.05" length="0.45"/> 
+            </geometry>  
+        </collision>
+    </link>
+
+    <gazebo>
+        <plugin
+            filename="libgazebo_set_joint_positions_plugin.so"
+            name="gazebo_set_joint_positions_plugin::SetJointPositions">
+            <topic_name>/joint_states</topic_name>
+        </plugin>
+    </gazebo>
+
+</robot>

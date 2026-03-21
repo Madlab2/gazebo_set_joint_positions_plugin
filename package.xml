@@ -1,31 +1,30 @@
 <?xml version="1.0"?>
 <package format="3">
     <name>gazebo_set_joint_positions_plugin</name>
-    <version>1.0.3</version>
-    <description>Set gazebo robot joint positions</description>
+    <version>2.0.0</version>
+    <description>Set gazebo robot joint positions - Gazebo Fortress/Ignition version</description>
     <maintainer email="Jason.Cochrane@boeing.com">Boeing</maintainer>
+    <maintainer email="arthurgomes2727@gmail.com">Arthur Gomes</maintainer>
     <author>Boeing</author>
+    <author>Arthur Gomes</author>
     <license>Apache-2.0</license>
 
     <buildtool_depend>ament_cmake</buildtool_depend>
 
-    <depend>gazebo_dev</depend>
-    <depend>gazebo_ros</depend>
     <depend>rclcpp</depend>
     <depend>sensor_msgs</depend>
     <depend>std_msgs</depend>
+    <depend>ignition-gazebo6</depend>
+    <depend>ignition-plugin1</depend>
+    <depend>ignition-common4</depend>
+    <depend>ignition-math6</depend>
 
     <test_depend>launch_testing_ament_cmake</test_depend>
-    <test_depend>robot_state_publisher</test_depend>
-    <test_depend>joint_state_publisher</test_depend>
+    <test_depend>ros_gz</test_depend>
     <test_depend>ros2launch</test_depend>
-    <test_depend>gazebo_ros_pkgs</test_depend>
-    <test_depend>urdf</test_depend>
-    <test_depend>xacro</test_depend>
 
     <export>
         <build_type>ament_cmake</build_type>
-        <gazebo_ros plugin_path="${prefix}/lib" gazebo_media_path="${prefix}" />
     </export>
 
 </package>

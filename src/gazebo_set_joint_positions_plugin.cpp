@@ -79,8 +79,8 @@ void SetJointPositions::jointStateCallback(const sensor_msgs::msg::JointState ms
     update_needed_ = true;
 }
 
-void SetJointPositions::PostUpdate(const gz::sim::UpdateInfo &_info,
-                                   const gz::sim::EntityComponentManager &_ecm)
+void SetJointPositions::PreUpdate(const gz::sim::UpdateInfo &_info,
+                                  gz::sim::EntityComponentManager &_ecm)
 {
     // Spin ROS 2 node to process callbacks
     rclcpp::spin_some(nh_);
@@ -151,10 +151,10 @@ void SetJointPositions::PostUpdate(const gz::sim::UpdateInfo &_info,
 
                 // Set joint position using JointPositionReset component
                 // This is the ECM way of setting joint positions
-                auto* pos_cmd = const_cast<gz::sim::EntityComponentManager&>(_ecm).Component<gz::sim::components::JointPositionReset>(joint_entity);
+                auto* pos_cmd = _ecm.Component<gz::sim::components::JointPositionReset>(joint_entity);
                 if (!pos_cmd)
                 {
-                    const_cast<gz::sim::EntityComponentManager&>(_ecm).CreateComponent(
+                    _ecm.CreateComponent(
                         joint_entity, gz::sim::components::JointPositionReset({position}));
                 }
                 else
@@ -163,10 +163,10 @@ void SetJointPositions::PostUpdate(const gz::sim::UpdateInfo &_info,
                 }
 
                 // Also reset velocity to zero
-                auto* vel_cmd = const_cast<gz::sim::EntityComponentManager&>(_ecm).Component<gz::sim::components::JointVelocityReset>(joint_entity);
+                auto* vel_cmd = _ecm.Component<gz::sim::components::JointVelocityReset>(joint_entity);
                 if (!vel_cmd)
                 {
-                    const_cast<gz::sim::EntityComponentManager&>(_ecm).CreateComponent(
+                    _ecm.CreateComponent(
                         joint_entity, gz::sim::components::JointVelocityReset({0.0}));
                 }
                 else
@@ -225,10 +225,10 @@ void SetJointPositions::PostUpdate(const gz::sim::UpdateInfo &_info,
                                                                        << old_angle << " to " << mimic_position);
 
                         // Set mimic joint position
-                        auto* mimic_pos_cmd = const_cast<gz::sim::EntityComponentManager&>(_ecm).Component<gz::sim::components::JointPositionReset>(jt_mimic);
+                        auto* mimic_pos_cmd = _ecm.Component<gz::sim::components::JointPositionReset>(jt_mimic);
                         if (!mimic_pos_cmd)
                         {
-                            const_cast<gz::sim::EntityComponentManager&>(_ecm).CreateComponent(
+                            _ecm.CreateComponent(
                                 jt_mimic, gz::sim::components::JointPositionReset({mimic_position}));
                         }
                         else
@@ -237,10 +237,10 @@ void SetJointPositions::PostUpdate(const gz::sim::UpdateInfo &_info,
                         }
 
                         // Reset velocity
-                        auto* mimic_vel_cmd = const_cast<gz::sim::EntityComponentManager&>(_ecm).Component<gz::sim::components::JointVelocityReset>(jt_mimic);
+                        auto* mimic_vel_cmd = _ecm.Component<gz::sim::components::JointVelocityReset>(jt_mimic);
                         if (!mimic_vel_cmd)
                         {
-                            const_cast<gz::sim::EntityComponentManager&>(_ecm).CreateComponent(
+                            _ecm.CreateComponent(
                                 jt_mimic, gz::sim::components::JointVelocityReset({0.0}));
                         }
                         else
@@ -260,7 +260,7 @@ IGNITION_ADD_PLUGIN(
     gazebo_set_joint_positions_plugin::SetJointPositions,
     gz::sim::System,
     gazebo_set_joint_positions_plugin::SetJointPositions::ISystemConfigure,
-    gazebo_set_joint_positions_plugin::SetJointPositions::ISystemPostUpdate)
+    gazebo_set_joint_positions_plugin::SetJointPositions::ISystemPreUpdate)
 
 IGNITION_ADD_PLUGIN_ALIAS(
     gazebo_set_joint_positions_plugin::SetJointPositions,

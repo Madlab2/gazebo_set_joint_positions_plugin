@@ -3,6 +3,7 @@
 
 #include <gz/sim/System.hh>
 #include <gz/sim/Model.hh>
+
 #include <gz/sim/Util.hh>
 #include <gz/sim/Entity.hh>
 #include <gz/sim/components/Joint.hh>
@@ -11,6 +12,8 @@
 #include <gz/sim/components/Name.hh>
 #include <gz/sim/components/Pose.hh>
 #include <sdf/Element.hh>
+
+#include <atomic>
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
@@ -21,19 +24,19 @@ namespace gazebo_set_joint_positions_plugin
 
 class SetJointPositions : public gz::sim::System,
                           public gz::sim::ISystemConfigure,
-                          public gz::sim::ISystemPostUpdate
+                          public gz::sim::ISystemPreUpdate
 {
   public:
     SetJointPositions();
     virtual ~SetJointPositions();
 
     void Configure(const gz::sim::Entity &_entity,
-                   const std::shared_ptr<const sdf::Element> &_sdf,
-                   gz::sim::EntityComponentManager &_ecm,
-                   gz::sim::EventManager &_eventMgr) override;
+                  const std::shared_ptr<const sdf::Element> &_sdf,
+                  gz::sim::EntityComponentManager &_ecm,
+                  gz::sim::EventManager &_eventMgr) override;
 
-    void PostUpdate(const gz::sim::UpdateInfo &_info,
-                    const gz::sim::EntityComponentManager &_ecm) override;
+    void PreUpdate(const gz::sim::UpdateInfo &_info,
+                  gz::sim::EntityComponentManager &_ecm) override;
 
   private:
     void jointStateCallback(const sensor_msgs::msg::JointState msg);
@@ -49,11 +52,11 @@ class SetJointPositions : public gz::sim::System,
     std::string topic_name_;
     std::string robot_namespace_;
 
-    bool update_needed_;
+    std::atomic<bool> update_needed_;
 
     std::vector<gz::sim::Entity> joints_list_;
     std::vector<gz::sim::Entity> links_list_;
-};
+  };
 }  // namespace gazebo_set_joint_positions_plugin
 
 #endif
